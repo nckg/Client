@@ -362,6 +362,33 @@ class Projects extends AbstractApi
 
     /**
      * @param int|string $project_id
+     * @param string     $commit_ref
+     * @param array|null $variables  {
+     *
+     *     @var string $key            The name of the variable
+     *     @var string $token          The name of the variable
+     *     @var mixed $value           The value of the variable
+     *     @var string $variable_type  env_var (default) or file
+     * }
+     *
+     * @return mixed
+     */
+    public function triggerPipeline($project_id, string $commit_ref, string $token, array $variables = null)
+    {
+        $parameters = [
+            'ref' => $commit_ref,
+            'token' => $token,
+        ];
+
+        if (null !== $variables) {
+            $parameters['variables'] = $variables;
+        }
+
+        return $this->post($this->getProjectPath($project_id, 'trigger/pipeline'), $parameters);
+    }
+
+    /**
+     * @param int|string $project_id
      * @param array      $parameters
      *
      * @return mixed
